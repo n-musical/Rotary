@@ -252,8 +252,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <div class="cv" id="cnt-val">5</div>
       <button class="cb" onclick="changeCnt(1)">+</button>
     </div>
-    <label class="lbl">도장 모양</label>
-    <div class="epwrap"><div class="epgrid" id="ep-grid"></div></div>
+<label class="lbl">도장 모양</label>
+<emoji-picker id="picker"></emoji-picker>
     <label class="lbl">혜택 구간 설정</label>
     <div id="rew-rows"></div>
     <button class="addrb" onclick="addRewRow('rew-rows')">+ 혜택 구간 추가</button>
@@ -423,22 +423,6 @@ function setTime(ctx, t) {
 function today() { return new Date().toISOString().split('T')[0]; }
 
 // ════════════════════════════════════════
-// 이모지 픽커
-// ════════════════════════════════════════
-function initEpicker() {
-  var g = document.getElementById('ep-grid');
-  g.innerHTML = EMOJIS.map(function(e) {
-    return '<div class="ep' + (e === selEmoji ? ' on' : '') + '" onclick="pickEmoji(this,\'' + e + '\')">' + e + '</div>';
-  }).join('');
-}
-
-function pickEmoji(el, e) {
-  selEmoji = e;
-  document.querySelectorAll('#ep-grid .ep').forEach(function(ep) { ep.classList.remove('on'); });
-  el.classList.add('on');
-}
-
-// ════════════════════════════════════════
 // 네비게이션
 // ════════════════════════════════════════
 function showSc(id) {
@@ -568,7 +552,6 @@ function openAddPad() {
   document.getElementById('cnt-val').textContent = 5;
   document.getElementById('rew-rows').innerHTML = '';
   addRewRow('rew-rows');
-  initEpicker();
   openModal('m-add-pad');
 }
 
@@ -589,7 +572,6 @@ function openEditPad(idx) {
     row.innerHTML = '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;"><input class="inp" value="' + r.label + '"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(row);
   });
-  initEpicker();
   openModal('m-add-pad');
 }
 
@@ -1090,6 +1072,15 @@ document.querySelector('#sc-cal .actbtn').addEventListener('click', openRecordMo
 // ════════════════════════════════════════
 renderHome();
 initCal();
+</script>
+  <script type="module">
+  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js';
+
+  const picker = document.querySelector('#picker');
+
+  picker.addEventListener('emoji-click', event => {
+    selEmoji = event.detail.unicode;
+  });
 </script>
 </body>
 </html>
