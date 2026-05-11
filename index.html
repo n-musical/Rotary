@@ -77,10 +77,6 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .ep.on { border-color: var(--navy); background: var(--pl); }
 .ep:hover { background: var(--pl); }
 
-/* 사진 업로드 */
-.phup { border: 2px dashed var(--brd); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; margin-bottom: 14px; }
-.phup:hover { border-color: var(--purple); }
-
 /* 도장판 그리드 */
 .sgrid { display: grid; gap: 8px; padding: 16px 20px; }
 .scell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -245,7 +241,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
     <input class="inp" id="i-sname" placeholder="예) 어쩌면 해피엔딩">
     <label class="lbl">장르</label>
     <select class="inp" id="i-sgenre">
-      <option>뮤지컬</option><option>연극</option><option>오페라</option><option>콘서트</option><option>기타</option>
+      <option>뮤지컬</option><option>연극</option><option>기타</option>
     </select>
     <div class="brow">
       <button class="mbtn s" onclick="closeModal('m-add-show')">취소</button>
@@ -266,7 +262,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <button class="cb" onclick="changeCnt(1)">+</button>
     </div>
     <label class="lbl">도장 모양</label>
-    <div id="emoji-grid" class="epgrid"></div>
+<emoji-picker id="picker"></emoji-picker>
     <label class="lbl">혜택 구간 설정</label>
     <div id="rew-rows"></div>
     <button class="addrb" onclick="addRewRow('rew-rows')">+ 혜택 구간 추가</button>
@@ -1052,6 +1048,15 @@ function addManualB() {
 
 // 초기화
 renderHome();
+</script>
+  <script type="module">
+  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js';
+
+  const picker = document.querySelector('#picker');
+
+  picker.addEventListener('emoji-click', event => {
+    selEmoji = event.detail.unicode;
+  });
 </script>
 </body>
 </html>
