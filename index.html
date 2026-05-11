@@ -33,7 +33,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 
 /* 하단 네비 */
 .bnav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--sur); border-top: 1px solid var(--brd); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-.ni { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 12px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--mu2); transition: color .15s; }
+.ni { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 12px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--mu); }
 .ni.on { color: var(--navy); }
 .ni-ico { font-size: 22px; line-height: 1; margin-bottom: 3px; }
 .ni-lbl { font-size: 10px; font-weight: 500; }
@@ -68,7 +68,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .rrow { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .rrow .inp { margin-bottom: 0; }
 .rmb { background: none; border: none; font-size: 18px; color: var(--mu2); cursor: pointer; padding: 4px; flex-shrink: 0; }
-.addrb { background: none; border: 1.5px dashed var(--brd); border-radius: 10px; width: 100%; padding: 10px; font-size: 13px; color: var(--purple); font-family: inherit; cursor: pointer; margin-bottom: 14px; }
+.addrb { background: none; border: 1.5px dashed var(--brd); border-radius: 10px; width: 100%; padding: 10px; font-size: 13px; color: var(--purple); font-family: inherit; cursor: pointer; margin-bottom: 8px; }
 
 /* 이모지 픽커 */
 .epwrap { background: var(--bg); border-radius: 12px; padding: 10px; margin-bottom: 14px; }
@@ -131,6 +131,14 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
   border-radius: 4px;
   background-size: cover;
   background-position: center;
+  background-color: var(--pl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--navy);
+  font-weight: 600;
+  padding: 2px;
 }
 /* 패드 수정/삭제 버튼 */
 .pad-actions { display: flex; gap: 8px; margin-top: 10px; }
@@ -201,7 +209,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
   </div>
   <div class="calgrid" id="cal-grid"></div>
   <div style="padding:16px 20px;">
-    <button class="actbtn" onclick="openModal('m-record')">관람 일정 등록하기</button>
+    <button class="actbtn" onclick="openRecordModal()">관람 일정 등록하기</button>
   </div>
 </div>
 
@@ -257,8 +265,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <div class="cv" id="cnt-val">5</div>
       <button class="cb" onclick="changeCnt(1)">+</button>
     </div>
-<label class="lbl">도장 모양</label>
-<emoji-picker id="picker"></emoji-picker>
+    <label class="lbl">도장 모양</label>
+    <div id="emoji-grid" class="epgrid"></div>
     <label class="lbl">혜택 구간 설정</label>
     <div id="rew-rows"></div>
     <button class="addrb" onclick="addRewRow('rew-rows')">+ 혜택 구간 추가</button>
@@ -374,7 +382,6 @@ const EMOJIS = [
   '💎','🔮','🪄','🎁','🎀','🎊','🎉','🏆','🥇','🎯','🧸','🪆','💌','📿','🕯️',
   '🌊','🏔️','🌝','🍄','🫧','🪐','🌍','🗝️','🔑','🧩','🎠','🎡','🫶','👑','🌞',
 ];
-const COLORS = ['#4a3580','#1a4060','#5c2a10','#1f5040','#5c3a00','#3a1f60','#8b2252'];
 
 // ════════════════════════════════════════
 // 데이터베이스
@@ -551,6 +558,7 @@ function openAddPad() {
   document.getElementById('cnt-val').textContent = 5;
   document.getElementById('rew-rows').innerHTML = '';
   addRewRow('rew-rows');
+  renderEmojiGrid();
   openModal('m-add-pad');
 }
 
@@ -571,6 +579,7 @@ function openEditPad(idx) {
     row.innerHTML = '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;"><input class="inp" value="' + r.label + '"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(row);
   });
+  renderEmojiGrid();
   openModal('m-add-pad');
 }
 
@@ -585,6 +594,19 @@ function addRewRow(containerId) {
   row.className = 'rrow';
   row.innerHTML = '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;"><input class="inp" placeholder="혜택 내용"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
   c.appendChild(row);
+}
+
+function renderEmojiGrid() {
+  var grid = document.getElementById('emoji-grid');
+  grid.innerHTML = EMOJIS.map(function(e) {
+    return '<div class="ep' + (e === selEmoji ? ' on' : '') + '" onclick="selectEmoji(\'' + e + '\')">' + e + '</div>';
+  }).join('');
+}
+
+function selectEmoji(e) {
+  selEmoji = e;
+  document.querySelectorAll('.ep').forEach(function(el) { el.classList.remove('on'); });
+  event.target.classList.add('on');
 }
 
 function copyRewards() {
@@ -665,7 +687,6 @@ function renderDet() {
   dc.innerHTML = Array.from({ length: p.total }, function(_, i) {
     if (i < recs.length) {
       var r = recs[i];
-      // 원본 인덱스 찾기
       var origIdx = (p.records || []).findIndex(function(rec) {
         return rec.date === r.date && rec.time === r.time && rec.memo === r.memo;
       });
@@ -728,26 +749,21 @@ function doStamp() {
   var memo = document.getElementById('s-memo').value.trim();
   if (!date) { alert('날짜를 입력해주세요'); return; }
 
-  // 현재 도장판에 찍을 수 있는 만큼 찍기
   var toAdd = Math.min(stampCnt, remaining);
   for (var i = 0; i < toAdd; i++) {
-    p.records.push({ date: date, time: times.stamp, memo: i === 0 ? memo : (memo ? memo : ''),     show: s.name
- });
+    p.records.push({ date: date, time: times.stamp, memo: i === 0 ? memo : '', show: s.name });
   }
   checkRewards(curShow, curPad);
 
-  // 이월 처리
   var overflow = stampCnt - toAdd;
   var carryMsg = '';
   if (overflow > 0) {
-    // 같은 설정으로 새 도장판 자동 생성
     var newPad = {
       total: p.total,
       emoji: p.emoji,
       rewards: JSON.parse(JSON.stringify(p.rewards)),
       records: []
     };
-    // 이월 도장 찍기
     for (var j = 0; j < overflow; j++) {
       newPad.records.push({ date: date, time: times.stamp, memo: memo, show: s.name });
     }
@@ -808,7 +824,6 @@ function deleteStamp(idx) {
 // ════════════════════════════════════════
 // 관람 등록
 // ════════════════════════════════════════
-
 function updatePadSel() {
   var sid = document.getElementById('r-show').value;
   var s = getShow(sid);
@@ -857,9 +872,6 @@ function checkRewards(sid, pi) {
   });
 }
 
-// ════════════════════════════════════════
-// 관람 등록 모달 열기
-// ════════════════════════════════════════
 function openRecordModal() {
   document.getElementById('r-show').innerHTML = db.shows.map(function(s) {
     return '<option value="' + s.id + '">' + s.name + '</option>';
@@ -906,18 +918,17 @@ function renderCal() {
     db.shows.forEach(function(s, si) {
       s.pads.forEach(function(p) {
         (p.records || []).forEach(function(r) {
-         if (r.date === ds && recs.length === 0) {
-  recs.push({ r: r, s: s, si: si });
-}
+          if (r.date === ds && recs.length === 0) {
+            recs.push({ r: r, s: s, si: si });
+          }
         });
       });
     });
     var posHtml = '';
     if (recs.length) {
       posHtml = '<div class="calposters">' + recs.map(function(item) {
-        return '<div class="calposter">' +
-  item.r.show +
-'</div>';
+        return '<div class="calposter">' + item.r.show + '</div>';
+      }).join('') + '</div>';
     }
     html += '<div class="calcell' + (isToday ? ' today' : '') + '">' +
       '<div class="calnum">' + d + '</div>' + posHtml + '</div>';
@@ -938,7 +949,6 @@ function renderB(filter) {
   var html = '';
 
   db.shows.forEach(function(s) {
-    // 같은 공연·같은 혜택명끼리 합치기
     var mergedMap = {};
     db.manualB.filter(function(b) { return b.sid === s.id; }).forEach(function(b) {
       if (mergedMap[b.label]) {
@@ -951,7 +961,6 @@ function renderB(filter) {
     });
     var earned = Object.values(mergedMap);
 
-    // 미달성 혜택 (도장판에서)
     var lockedMap = {};
     s.pads.forEach(function(p, pi) {
       var filled = (p.records || []).length;
@@ -962,7 +971,6 @@ function renderB(filter) {
           });
           if (!already) {
             if (lockedMap[r.label]) {
-              // 여러 도장판에 같은 혜택이면 가장 적게 남은 것 표시
               lockedMap[r.label].need = Math.min(lockedMap[r.label].need, r.n - filled);
             } else {
               lockedMap[r.label] = { label: r.label, need: r.n - filled, isLocked: true };
@@ -998,35 +1006,28 @@ function renderB(filter) {
           '<div class="cntbox cok"><div class="n">' + avail + '</div><div class="l">미사용</div></div>' +
           '<div class="cntbox cno"><div class="n">' + b.used + '</div><div class="l">사용 완료</div></div>' +
           '</div>' +
-          '<button class="actbtn"' + (avail <= 0 ? ' disabled' : '') + ' onclick="useMergedBenefit(\'' + s.id + '\',\'' + b.label + '\')">사용하기</button>' +
+          '<button class="actbtn" onclick="toggleUse(' + JSON.stringify(b.ids).replace(/"/g, '&quot;') + ',false)">사용하기</button>' +
           '</div>';
       }
     });
   });
 
-  if (!html) {
-    html = '<div style="text-align:center;padding:40px 20px;color:var(--mu);font-size:14px;">아직 혜택이 없어요<br>도장판을 채우면 자동으로 추가돼요 🎁</div>';
-  }
-  c.innerHTML = html;
+  c.innerHTML = html || '<div style="text-align:center;padding:40px 20px;color:var(--mu);font-size:14px;">혜택이 없어요</div>';
 }
 
-function filterB(filter, btn) {
+function filterB(f, btn) {
   document.querySelectorAll('.fb').forEach(function(b) { b.classList.remove('on'); });
   btn.classList.add('on');
-  renderB(filter);
+  renderB(f);
 }
 
-function useMergedBenefit(sid, label) {
-  // 해당 공연+혜택명의 미사용 항목 찾아서 1개 차감
-  var targets = db.manualB.filter(function(b) {
-    return b.sid === sid && b.label === label && (b.total - b.used) > 0;
+function toggleUse(ids, used) {
+  ids.forEach(function(id) {
+    var b = db.manualB.find(function(x) { return x.id === id; });
+    if (b) b.used = used ? 0 : b.total;
   });
-  if (!targets.length) return;
-  if (!confirm("'" + label + "' 1개를 사용 처리할까요?")) return;
-  targets[0].used++;
   save();
   renderB('all');
-  document.querySelectorAll('.fb')[0].classList.add('on');
 }
 
 function openManualBenefit() {
@@ -1038,36 +1039,19 @@ function openManualBenefit() {
 
 function addManualB() {
   var sid = document.getElementById('b-show').value;
-  var label = document.getElementById('b-name').value.trim();
-  var total = parseInt(document.getElementById('b-count').value) || 1;
-  if (!label) { alert('혜택 이름을 입력해주세요'); return; }
-  db.manualB.push({ id: uid(), sid: sid, pi: -1, label: label, total: total, used: 0, auto: false });
+  var name = document.getElementById('b-name').value.trim();
+  var count = parseInt(document.getElementById('b-count').value) || 1;
+  if (!sid || !name) { alert('필수 항목을 입력해주세요'); return; }
+  db.manualB.push({ id: uid(), sid: sid, label: name, total: count, used: 0, auto: false });
   save();
   closeModal('m-add-benefit');
   document.getElementById('b-name').value = '';
+  document.getElementById('b-count').value = '1';
   renderB('all');
-  document.querySelectorAll('.fb')[0].classList.add('on');
 }
 
-// ════════════════════════════════════════
-// 캘린더 버튼 연결
-// ════════════════════════════════════════
-document.querySelector('#sc-cal .actbtn').addEventListener('click', openRecordModal);
-
-// ════════════════════════════════════════
 // 초기화
-// ════════════════════════════════════════
 renderHome();
-initCal();
-</script>
-  <script type="module">
-  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js';
-
-  const picker = document.querySelector('#picker');
-
-  picker.addEventListener('emoji-click', event => {
-    selEmoji = event.detail.unicode;
-  });
 </script>
 </body>
 </html>
