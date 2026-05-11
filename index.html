@@ -321,12 +321,6 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 <div class="ov" id="m-record">
   <div class="modal">
     <h3>관람 등록</h3>
-    <label class="lbl">포스터 / 사진</label>
-    <div class="phup" id="photo-area" onclick="document.getElementById('photo-input').click()">
-      <div style="font-size:32px;">📷</div>
-      <div style="font-size:13px;color:var(--mu);margin-top:8px;">탭하여 사진 선택</div>
-    </div>
-    <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="previewPhoto(this)">
     <label class="lbl">공연 선택</label>
     <select class="inp" id="r-show" onchange="updatePadSel()"></select>
     <label class="lbl">도장판 선택</label>
@@ -397,7 +391,7 @@ let curShow = null, curPad = null;
 let stack = ['home'];
 let padCnt = 5, selEmoji = '🎭';
 let times = { stamp: 'day', rec: 'day', edit: 'day' };
-let photoData = null, editStampIdx = null;
+let editStampIdx = null;
 let calY, calM;
 
 // ════════════════════════════════════════
@@ -737,7 +731,8 @@ function doStamp() {
   // 현재 도장판에 찍을 수 있는 만큼 찍기
   var toAdd = Math.min(stampCnt, remaining);
   for (var i = 0; i < toAdd; i++) {
-    p.records.push({ date: date, time: times.stamp, memo: i === 0 ? memo : (memo ? memo : ''), photo: photoData || null });
+    p.records.push({ date: date, time: times.stamp, memo: i === 0 ? memo : (memo ? memo : ''),     show: s.name
+ });
   }
   checkRewards(curShow, curPad);
 
@@ -754,7 +749,7 @@ function doStamp() {
     };
     // 이월 도장 찍기
     for (var j = 0; j < overflow; j++) {
-      newPad.records.push({ date: date, time: times.stamp, memo: memo, photo: photoData || null });
+      newPad.records.push({ date: date, time: times.stamp, memo: memo, show: s.name });
     }
     s.pads.push(newPad);
     var newPadIdx = s.pads.length - 1;
@@ -813,18 +808,6 @@ function deleteStamp(idx) {
 // ════════════════════════════════════════
 // 관람 등록
 // ════════════════════════════════════════
-function previewPhoto(inp) {
-  var file = inp.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    photoData = e.target.result;
-    document.getElementById('photo-area').innerHTML =
-      '<img src="' + photoData + '" style="width:100%;border-radius:10px;max-height:180px;object-fit:cover;">' +
-      '<div style="font-size:11px;color:var(--mu);margin-top:6px;">탭하여 변경</div>';
-  };
-  reader.readAsDataURL(file);
-}
 
 function updatePadSel() {
   var sid = document.getElementById('r-show').value;
@@ -846,12 +829,10 @@ function addRecord() {
   if (!p) return;
   if (!p.records) p.records = [];
   if (p.records.length >= p.total) { alert('도장판이 이미 완성됐어요!'); return; }
-  p.records.push({ date: date, time: times.rec, price: price, memo: memo, photo: photoData });
+  p.records.push({ date: date, time: times.rec, price: price, memo: memo, show: s.name });
   checkRewards(sid, pi);
   save();
   closeModal('m-record');
-  photoData = null;
-  document.getElementById('photo-area').innerHTML = '<div style="font-size:32px;">📷</div><div style="font-size:13px;color:var(--mu);margin-top:8px;">탭하여 사진 선택</div>';
   document.getElementById('r-price').value = '';
   document.getElementById('r-memo').value = '';
   renderHome();
@@ -934,9 +915,9 @@ function renderCal() {
     var posHtml = '';
     if (recs.length) {
       posHtml = '<div class="calposters">' + recs.map(function(item) {
-        var col = COLORS[item.si % COLORS.length];
-        return '<div class="calposter" style="background-image:url(' + item.r.photo + '); background-size:cover; background-position:center;"></div>';
-      }).join('') + '</div>';
+        return '<div class="calposter">' +
+  item.r.show +
+'</div>';
     }
     html += '<div class="calcell' + (isToday ? ' today' : '') + '">' +
       '<div class="calnum">' + d + '</div>' + posHtml + '</div>';
