@@ -6,7 +6,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>커튼콜</title>
+<title>회전문</title>
+<meta name="apple-mobile-web-app-title" content="회전문">
+<meta name="application-name" content="회전문">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 :root {
@@ -19,26 +22,18 @@
 html, body { width: 100%; height: 100%; overflow: hidden; }
 body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--tx); display: flex; justify-content: center; }
 .app { width: 100%; height: 100vh; height: 100dvh; background: var(--sur); display: flex; flex-direction: column; overflow: hidden; }
-
-/* 화면 */
 .sc { display: none; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 72px; }
 .sc.on { display: flex; }
-
-/* 상단바 */
 .tbar { position: sticky; top: 0; z-index: 10; background: var(--sur); border-bottom: 1px solid var(--brd); padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
 .tbar h2 { font-size: 18px; font-weight: 700; color: var(--navy); }
 .bk { font-size: 20px; color: var(--navy); cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background .15s; }
 .bk:hover { background: var(--pll); }
 .rbtn { margin-left: auto; background: var(--navy); color: #fff; border: none; border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
-
-/* 하단 네비 */
 .bnav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--sur); border-top: 1px solid var(--brd); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-.ni { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 12px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--mu); }
+.ni { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 12px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--mu2); transition: color .15s; }
 .ni.on { color: var(--navy); }
 .ni-ico { font-size: 22px; line-height: 1; margin-bottom: 3px; }
 .ni-lbl { font-size: 10px; font-weight: 500; }
-
-/* 공통 */
 .stit { padding: 16px 20px 8px; font-size: 11px; font-weight: 700; color: var(--mu); letter-spacing: .1em; text-transform: uppercase; }
 .card { margin: 0 20px 10px; background: var(--sur); border: 1.5px solid var(--brd); border-radius: 16px; padding: 16px; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
 .card:hover { border-color: var(--purple); box-shadow: 0 4px 20px rgba(124,92,191,.1); }
@@ -46,11 +41,9 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .addcard:hover { border-color: var(--purple); color: var(--purple); }
 .tag { display: inline-block; background: var(--pl); color: var(--purple); border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 600; }
 .banner { margin: 12px 20px; background: var(--pl); border: 1px solid rgba(124,92,191,.2); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
-
-/* 모달 */
 .ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: flex-end; justify-content: center; }
 .ov.open { display: flex; }
-.modal { background: var(--sur); border-radius: 24px 24px 0 0; width: 100%; padding: 24px 20px 40px; max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+.modal { background: var(--sur); border-radius: 24px 24px 0 0; width: 100%; padding: 24px 20px calc(40px + env(safe-area-inset-bottom)); max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .modal h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
 .lbl { font-size: 11px; font-weight: 700; color: var(--mu); letter-spacing: .08em; text-transform: uppercase; display: block; margin-bottom: 6px; }
 .inp { width: 100%; padding: 12px 14px; border: 1.5px solid var(--brd); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--tx); background: var(--sur); margin-bottom: 14px; outline: none; }
@@ -68,16 +61,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .rrow { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .rrow .inp { margin-bottom: 0; }
 .rmb { background: none; border: none; font-size: 18px; color: var(--mu2); cursor: pointer; padding: 4px; flex-shrink: 0; }
-.addrb { background: none; border: 1.5px dashed var(--brd); border-radius: 10px; width: 100%; padding: 10px; font-size: 13px; color: var(--purple); font-family: inherit; cursor: pointer; margin-bottom: 8px; }
-
-/* 이모지 픽커 */
-.epwrap { background: var(--bg); border-radius: 12px; padding: 10px; margin-bottom: 14px; }
-.epgrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 200px; overflow-y: auto; }
-.ep { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 22px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
-.ep.on { border-color: var(--navy); background: var(--pl); }
-.ep:hover { background: var(--pl); }
-
-/* 도장판 그리드 */
+.addrb { background: none; border: 1.5px dashed var(--brd); border-radius: 10px; width: 100%; padding: 10px; font-size: 13px; color: var(--purple); font-family: inherit; cursor: pointer; margin-bottom: 14px; }
 .sgrid { display: grid; gap: 8px; padding: 16px 20px; }
 .scell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .scirc { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--brd); display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--sur); cursor: pointer; }
@@ -86,10 +70,33 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .sbtns { display: flex; gap: 3px; }
 .sedit { font-size: 9px; background: var(--pl); color: var(--purple); border: none; border-radius: 5px; padding: 2px 5px; cursor: pointer; font-family: inherit; }
 .sdel { font-size: 9px; background: #fdeaea; color: #c0392b; border: none; border-radius: 5px; padding: 2px 5px; cursor: pointer; font-family: inherit; }
+.bfil {
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
 
-/* 혜택 */
-.bfil { padding: 12px 20px; display: flex; gap: 8px; overflow-x: auto; }
-.fb { border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--brd); white-space: nowrap; font-family: inherit; background: var(--sur); color: var(--mu); }
+.fb {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--brd);
+  font-family: inherit;
+  background: var(--sur);
+  color: var(--mu);
+  white-space: nowrap;
+}
+
+.fb.on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+.fb { border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--brd); font-family: inherit; background: var(--sur); color: var(--mu); }
 .fb.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .bstit { padding: 8px 20px 4px; font-size: 13px; font-weight: 700; color: var(--navy); }
 .bcard { margin: 0 20px 10px; background: var(--sur); border: 1.5px solid var(--brd); border-radius: 14px; padding: 14px 16px; }
@@ -102,13 +109,9 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .cno { background: var(--bg); } .cno .n { color: var(--mu); }
 .actbtn { width: 100%; padding: 12px; border-radius: 10px; background: var(--navy); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; }
 .actbtn:disabled { background: var(--brd); color: var(--mu); cursor: default; }
-
-/* 보상 */
 .rwitem { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
 .rwdone { background: var(--gnl); } .rwdone .rc { color: var(--gn); font-weight: 700; }
 .rwtodo { background: var(--bg); border: 1px solid var(--brd); } .rwtodo .rc { color: var(--mu); font-weight: 700; }
-
-/* 캘린더 */
 .calh { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
 .calm { font-size: 20px; font-weight: 700; color: var(--navy); }
 .calnav { background: none; border: none; font-size: 22px; color: var(--navy); cursor: pointer; padding: 4px 10px; }
@@ -121,25 +124,16 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .calcell.today .calnum { background: var(--navy); color: #fff; font-weight: 700; }
 .calcell.faded .calnum { color: var(--mu2); }
 .calposters { display: flex; flex-direction: column; gap: 2px; width: 100%; }
-.calposter {
-  width: 100%;
-  height: 32px;
-  border-radius: 4px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--pl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  color: var(--navy);
-  font-weight: 600;
-  padding: 2px;
-}
-/* 패드 수정/삭제 버튼 */
+.calposter { width: 100%; border-radius: 4px; padding: 2px 4px; font-size: 9px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pad-actions { display: flex; gap: 8px; margin-top: 10px; }
 .pad-edit { flex: 1; padding: 7px; font-size: 12px; border-radius: 8px; background: var(--pl); color: var(--purple); border: none; cursor: pointer; font-family: inherit; font-weight: 600; }
 .pad-del { flex: 1; padding: 7px; font-size: 12px; border-radius: 8px; background: #fdeaea; color: #c0392b; border: none; cursor: pointer; font-family: inherit; font-weight: 600; }
+.btn { width: 100%; padding: 12px; border-radius: 10px; background: var(--navy); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; display: block; }
+.btn.danger { background: #c0392b; }
+.btn.ghost { background: var(--bg); color: var(--mu); }
+emoji-picker { width: 100%; height: 320px; border-radius: 14px; margin-bottom: 14px; }
+.ck { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--tx); margin-bottom: 14px; cursor: pointer; }
+#sc-benefit { padding-top: 0; overflow-y: auto; }
 </style>
 </head>
 <body>
@@ -148,19 +142,18 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 <!-- 홈 -->
 <div class="sc on" id="sc-home">
   <div style="padding:20px 20px 0;">
-    <div style="font-size:28px;font-weight:700;color:var(--navy);">커튼콜 🎭</div>
-    <div style="font-size:12px;color:var(--mu);margin-top:2px;">오늘도 커튼콜!</div>
+    <div style="font-size:28px;font-weight:700;color:var(--navy);">회전문 🎭</div>
+    <div style="font-size:12px;color:var(--mu);margin-top:2px;">오늘도 회전문...</div>
   </div>
   <div id="home-banner" style="display:none;" class="banner">
     <div style="font-size:26px;">🎭</div>
     <div>
       <div id="banner-txt" style="font-size:14px;font-weight:700;color:var(--navy);"></div>
-      <div style="font-size:11px;color:var(--mu);margin-top:2px;">관람 후 체크인을 잊지 마세요</div>
+      <div style="font-size:11px;color:var(--mu);margin-top:2px;">관람 후 도장 적립을 잊지 마세요</div>
     </div>
   </div>
   <div class="stit">진행 중인 공연</div>
   <div id="home-list"></div>
-  <div class="addcard" onclick="openModal('m-add-show')">+ 새 공연 추가</div>
 </div>
 
 <!-- 공연별 도장판 -->
@@ -205,13 +198,13 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
   </div>
   <div class="calgrid" id="cal-grid"></div>
   <div style="padding:16px 20px;">
-    <button class="actbtn" onclick="openRecordModal()">관람 일정 등록하기</button>
+    <button class="actbtn" id="cal-reg-btn">관람 일정 등록하기</button>
   </div>
 </div>
 
 <!-- 혜택 -->
 <div class="sc" id="sc-benefit">
-  <div class="tbar"><h2>혜택 관리</h2></div>
+  <div class="tbar" style="position:sticky;top:0;z-index:10;"><h2>혜택 관리</h2></div>
   <div class="bfil">
     <button class="fb on" onclick="filterB('all',this)">전체</button>
     <button class="fb" onclick="filterB('ok',this)">사용 가능</button>
@@ -238,7 +231,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
   <div class="modal">
     <h3>새 공연 추가</h3>
     <label class="lbl">공연명</label>
-    <input class="inp" id="i-sname" placeholder="예) 어쩌면 해피엔딩">
+    <input class="inp" id="i-sname" placeholder="공연명을 입력해주세요.">
     <label class="lbl">장르</label>
     <select class="inp" id="i-sgenre">
       <option>뮤지컬</option><option>연극</option><option>기타</option>
@@ -246,6 +239,17 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
     <div class="brow">
       <button class="mbtn s" onclick="closeModal('m-add-show')">취소</button>
       <button class="mbtn p" onclick="addShow()">추가하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 모달: 보관함 -->
+<div class="ov" id="m-archive">
+  <div class="modal">
+    <h3>📦 보관함</h3>
+    <div id="archive-list"></div>
+    <div class="brow" style="margin-top:16px;">
+      <button class="mbtn s" onclick="closeModal('m-archive')">닫기</button>
     </div>
   </div>
 </div>
@@ -262,7 +266,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <button class="cb" onclick="changeCnt(1)">+</button>
     </div>
     <label class="lbl">도장 모양</label>
-<emoji-picker id="picker"></emoji-picker>
+    <div style="margin-bottom:14px;">
+      <div id="selected-emoji" style="font-size:40px;text-align:center;margin-bottom:10px;">🎭</div>
+      <emoji-picker id="emoji-picker"></emoji-picker>
+    </div>
     <label class="lbl">혜택 구간 설정</label>
     <div id="rew-rows"></div>
     <button class="addrb" onclick="addRewRow('rew-rows')">+ 혜택 구간 추가</button>
@@ -291,8 +298,12 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <button class="tgl" onclick="selectStampCnt(this,2)">더블 ×2</button>
       <button class="tgl" onclick="selectStampCnt(this,3)">트리플 ×3</button>
     </div>
-    <label class="lbl">한줄 감상 (선택)</label>
-    <input class="inp" id="s-memo" placeholder="오늘도 너무 좋았어...">
+    <label class="ck">
+      <input type="checkbox" id="s-calendar" checked>
+      <span>캘린더 일정에도 등록하기</span>
+    </label>
+    <label class="lbl" style="margin-top:14px;">MEMO (선택)</label>
+    <input class="inp" id="s-memo" placeholder="ex) 도장 교환">
     <div class="brow">
       <button class="mbtn s" onclick="closeModal('m-stamp')">취소</button>
       <button class="mbtn p" onclick="doStamp()">도장 찍기!</button>
@@ -312,7 +323,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
       <button class="tgl on" id="e-day" onclick="setTime('edit','day')">🌤 낮공</button>
       <button class="tgl" id="e-night" onclick="setTime('edit','night')">🌙 밤공</button>
     </div>
-    <label class="lbl">한줄 감상</label>
+    <label class="lbl">메모</label>
     <input class="inp" id="e-memo">
     <div class="brow">
       <button class="mbtn s" onclick="closeModal('m-edit-stamp')">취소</button>
@@ -335,6 +346,12 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
     <div class="trow">
       <button class="tgl on" id="r-day" onclick="setTime('rec','day')">🌤 낮공</button>
       <button class="tgl" id="r-night" onclick="setTime('rec','night')">🌙 밤공</button>
+    </div>
+    <label class="lbl">적립 방식</label>
+    <div class="trow" id="record-cnt-row">
+      <button class="tgl on" onclick="selectRecordCnt(this,1)">일반 ×1</button>
+      <button class="tgl" onclick="selectRecordCnt(this,2)">더블 ×2</button>
+      <button class="tgl" onclick="selectRecordCnt(this,3)">트리플 ×3</button>
     </div>
     <label class="lbl">티켓 가격</label>
     <input class="inp" type="number" id="r-price" placeholder="예) 99000">
@@ -364,48 +381,55 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
   </div>
 </div>
 
-<script>
-// ════════════════════════════════════════
-// 이모지 목록
-// ════════════════════════════════════════
-const EMOJIS = [
-  '🎭','🎪','🎬','🎨','🎧','🎵','🎶','🎤','🎹','🎸','🎺','🎻','🥁','🎷',
-  '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💗','💓','💞','💕','💖','💝','💘','💟','❣️',
-  '⭐','🌟','✨','💫','🌠','🌌','🌃','🌙','🌛','🌜','☀️','🌤️','⚡','🔥','🌈',
-  '🌸','🌺','🌻','🌹','🌷','💐','🌼','🪷','🍀','🌿','🍃','🌱','🪴','🌲','🍁','🍂',
-  '🦋','🐱','🐶','🐰','🦊','🐻','🐼','🐨','🦁','🐯','🐸','🐧','🦄','🐝','🦩','🐬',
-  '🍓','🍑','🍒','🍰','🎂','🧁','🍫','🍭','🍬','🍩','🍪','🧋','🫐','🍇','🍉',
-  '💎','🔮','🪄','🎁','🎀','🎊','🎉','🏆','🥇','🎯','🧸','🪆','💌','📿','🕯️',
-  '🌊','🏔️','🌝','🍄','🫧','🪐','🌍','🗝️','🔑','🧩','🎠','🎡','🫶','👑','🌞',
-];
+<!-- 모달: 관람 기록 상세 -->
+<div class="ov" id="m-stamp-detail">
+  <div class="modal">
+    <h3>관람 기록</h3>
+    <div id="stamp-detail-body" style="margin-bottom:16px;"></div>
+    <button class="btn" id="stamp-edit-btn" style="margin-bottom:8px;">수정</button>
+    <button class="btn danger" id="stamp-delete-btn" style="margin-bottom:8px;">삭제</button>
+    <button class="btn ghost" onclick="closeModal('m-stamp-detail')">닫기</button>
+  </div>
+</div>
 
-// ════════════════════════════════════════
-// 데이터베이스
-// ════════════════════════════════════════
-let db = JSON.parse(localStorage.getItem('cc6') || 'null') || { shows: [], manualB: [] };
+<script>
+var COLORS = ['#4a3580','#1a4060','#5c2a10','#1f5040','#5c3a00','#3a1f60','#8b2252'];
+
+var db = JSON.parse(localStorage.getItem('cc6') || 'null') || { shows: [], manualB: [], archived: [] };
 function save() { localStorage.setItem('cc6', JSON.stringify(db)); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function getShow(id) { return db.shows.find(s => s.id === id); }
+function getShow(id) { return db.shows.find(function(s){ return s.id === id; }); }
+function particle(word, type) {
+  var lastChar = word.charCodeAt(word.length - 1);
+  var hasBatchim = (lastChar - 44032) % 28 !== 0;
 
-// ════════════════════════════════════════
-// 앱 상태
-// ════════════════════════════════════════
-let curShow = null, curPad = null;
-let stack = ['home'];
-let padCnt = 5, selEmoji = '🎭';
-let times = { stamp: 'day', rec: 'day', edit: 'day' };
-let editStampIdx = null;
-let calY, calM;
+  var particles = {
+    '을를': hasBatchim ? '을' : '를',
+    '이가': hasBatchim ? '이' : '가',
+    '은는': hasBatchim ? '은' : '는',
+    '와과': hasBatchim ? '과' : '와',
+    '으로로': hasBatchim ? '으로' : '로'
+  };
 
-// ════════════════════════════════════════
-// 모달
-// ════════════════════════════════════════
+  return word + particles[type];
+}
+
+var curShow = null, curPad = null;
+var stack = ['home'];
+var padCnt = 5, selEmoji = '🎭';
+var times = { stamp: 'day', rec: 'day', edit: 'day' };
+var editStampIdx = null;
+var calY, calM;
+var stampCnt = 1;
+var recordStampCnt = 1;
+var selectedStampRecord = null;
+var benefitCollapsed = {};
+var currentBenefitFilter = 'all';
+
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.ov').forEach(function(o) {
-  o.addEventListener('click', function(e) {
-    if (e.target === o) closeModal(o.id);
-  });
+  o.addEventListener('click', function(e) { if (e.target === o) closeModal(o.id); });
 });
 
 function setTime(ctx, t) {
@@ -424,9 +448,19 @@ function setTime(ctx, t) {
 
 function today() { return new Date().toISOString().split('T')[0]; }
 
-// ════════════════════════════════════════
-// 네비게이션
-// ════════════════════════════════════════
+function initEpicker() {
+  var picker = document.getElementById('emoji-picker');
+  var preview = document.getElementById('selected-emoji');
+  if (!picker.dataset.bound) {
+    picker.addEventListener('emoji-click', function(e) {
+      selEmoji = e.detail.unicode;
+      preview.textContent = selEmoji;
+    });
+    picker.dataset.bound = '1';
+  }
+  preview.textContent = selEmoji;
+}
+
 function showSc(id) {
   document.querySelectorAll('.sc').forEach(function(s) { s.classList.remove('on'); });
   document.getElementById('sc-' + id).classList.add('on');
@@ -435,7 +469,7 @@ function showSc(id) {
 
 function navigate(tab, btn) {
   document.querySelectorAll('.ni').forEach(function(b) { b.classList.remove('on'); });
-  btn.classList.add('on');
+  if (btn) btn.classList.add('on');
   stack = [tab];
   if (tab === 'home' || tab === 'show-home') { renderHome(); showSc('home'); }
   else if (tab === 'cal') { initCal(); showSc('cal'); }
@@ -453,65 +487,146 @@ function goBack() {
 // 홈
 // ════════════════════════════════════════
 function renderHome() {
-  var c = document.getElementById('home-list');
-  if (!db.shows.length) {
-    c.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--mu);font-size:14px;">아직 공연이 없어요<br>아래 버튼을 눌러 추가해보세요 🎭</div>';
-    return;
+  var c = document.getElementById('home-list'), html = '';
+  if (!c) return;
+  var activeShows = (db.shows || []).filter(function(s) { return !s.archived; });
+  if (activeShows.length === 0) {
+    html += '<div style="text-align:center;padding:30px 20px;color:var(--mu);font-size:13px;">등록된 공연이 없어요.</div>';
+  } else {
+    activeShows.forEach(function(s) {
+      var padCount = (s.pads || []).length;
+      html += '<div class="card" onclick="goShow(\'' + s.id + '\')" style="padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">' +
+        '<div>' +
+        '<div style="font-weight:700;color:var(--navy);font-size:15px;">' + s.name + '</div>' +
+        '<div style="color:var(--mu);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:6px;">' +
+        '<span>' + (s.genre || '뮤지컬') + '</span>' +
+        '<span style="color:var(--brd);">|</span>' +
+        '<span style="color:var(--navy);font-weight:700;">도장판 ' + padCount + '개</span>' +
+        '</div>' +
+        '</div>' +
+        '<div style="margin-top:10px;display:flex;gap:6px;">' +
+        '<button onclick="event.stopPropagation();archiveShow(\'' + s.id + '\')" style="flex:1;padding:7px;font-size:12px;border-radius:8px;background:var(--pl);color:var(--purple);border:none;cursor:pointer;font-family:inherit;font-weight:600;">📦 보관</button>' +
+        '<button onclick="event.stopPropagation();deleteShow(\'' + s.id + '\')" style="flex:1;padding:7px;font-size:12px;border-radius:8px;background:#fdeaea;color:#c0392b;border:none;cursor:pointer;font-family:inherit;font-weight:600;">🗑 삭제</button>' +
+        '</div></div>';
+    });
   }
-  c.innerHTML = db.shows.map(function(s) {
-    var active = s.pads.filter(function(p) { return (p.records || []).length < p.total; }).length;
-    return '<div class="card" onclick="goShow(\'' + s.id + '\')">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-      '<div style="font-size:16px;font-weight:700;color:var(--navy);">' + s.name + '</div>' +
-      '<div style="color:var(--purple);font-weight:700;">›</div></div>' +
-      '<span class="tag">' + s.genre + '</span>' +
-      '<div style="margin-top:8px;font-size:12px;color:var(--mu);">도장판 ' + s.pads.length + '개 · 진행 중 ' + active + '개</div>' +
-      '</div>';
-  }).join('');
+  html += '<div style="margin:10px 20px 8px;">' +
+    '<button onclick="openModal(\'m-add-show\')" style="width:100%;padding:10px;background:var(--navy);color:white;border:none;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;">+ 새 공연 추가</button>' +
+    '</div>';
+  // ✅ 보관함 버튼 하나만 유지
+  html += '<div style="margin:0 20px 20px;">' +
+    '<button onclick="openArchive()" style="width:100%;padding:8px;background:none;border:1px solid var(--brd);border-radius:8px;color:var(--mu);font-size:11px;cursor:pointer;">📦 보관함 보기</button>' +
+    '</div>';
+  c.innerHTML = html;
+  renderTodayBanner();
+}
 
-  // 오늘 배너
+function renderTodayBanner() {
+  var banner = document.getElementById('home-banner');
+  var txt = document.getElementById('banner-txt');
+
+  if (!banner || !txt) return;
+
   var td = today();
-  var found = null;
+
+  var todayShows = [];
+
   db.shows.forEach(function(s) {
-    s.pads.forEach(function(p) {
+    (s.pads || []).forEach(function(p) {
       (p.records || []).forEach(function(r) {
-        if (r.date === td) found = s.name;
+
+        if (r.date === td) {
+
+          var label =
+            (r.time === 'night' ? '🌙 밤공' : '🌤 낮공') +
+            ' · ' + s.name;
+
+          if (todayShows.indexOf(label) === -1) {
+  todayShows.push(label);
+}
+        }
+
       });
     });
   });
-  var bn = document.getElementById('home-banner');
-  if (found) {
-    document.getElementById('banner-txt').textContent = '오늘 ' + found + ' 관람!';
-    bn.style.display = 'flex';
-  } else {
-    bn.style.display = 'none';
+
+  if (!todayShows.length) {
+    banner.style.display = 'none';
+    return;
   }
+
+  banner.style.display = 'flex';
+
+  txt.innerHTML =
+    '오늘 ' +
+    todayShows.join('<br>') +
+    ' 관람이 있어요!';
 }
 
 function addShow() {
-  var name = document.getElementById('i-sname').value.trim();
-  var genre = document.getElementById('i-sgenre').value;
+  var nameEl = document.getElementById('i-sname');
+  var genreEl = document.getElementById('i-sgenre');
+  if (!nameEl) return;
+  var name = nameEl.value.trim();
+  var genre = genreEl ? genreEl.value : '';
   if (!name) { alert('공연명을 입력해주세요'); return; }
-  db.shows.push({ id: uid(), name: name, genre: genre, pads: [] });
-  save();
-  closeModal('m-add-show');
-  document.getElementById('i-sname').value = '';
-  renderHome();
+  db.shows.push({ id: uid(), name: name, genre: genre, pads: [], archived: false });
+  save(); closeModal('m-add-show'); nameEl.value = ''; renderHome();
 }
 
-function goShow(id) {
-  curShow = id;
-  stack.push('show');
-  renderShowSc();
-  showSc('show');
+function deleteShow(id) {
+  var s = getShow(id); if (!s) return;
+  if (!confirm(
+  particle('"' + s.name + '"', '을를') +
+  ' 삭제할까요?\n모든 도장판과 혜택 기록이 삭제됩니다.'
+)) return;
+  db.manualB = db.manualB.filter(function(b) { return b.sid !== id; });
+  db.shows = db.shows.filter(function(x) { return x.id !== id; });
+  save(); renderHome();
+}
+
+function archiveShow(id) {
+  var s = getShow(id); if (!s) return;
+if (!confirm(
+  particle('"' + s.name + '"', '을를') +
+  ' 보관할까요?'
+)) return;
+  s.archived = true;
+  save(); renderHome();
+}
+
+function openArchive() {
+  var archived = db.shows.filter(function(s) { return s.archived; });
+  var c = document.getElementById('archive-list');
+  if (!archived.length) {
+    c.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--mu);font-size:14px;">보관된 공연이 없어요</div>';
+  } else {
+    c.innerHTML = archived.map(function(s) {
+      var totalPads = s.pads.length;
+      var donePads = s.pads.filter(function(p) { return (p.records||[]).length >= p.total; }).length;
+      return '<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;">' +
+        '<div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;">' + s.name + '</div>' +
+        '<div style="font-size:12px;color:var(--mu);margin-bottom:10px;">도장판 ' + totalPads + '개 · 완료 ' + donePads + '개</div>' +
+        '<div style="display:flex;gap:6px;">' +
+        '<button onclick="unarchiveShow(\'' + s.id + '\')" style="flex:1;padding:7px;font-size:12px;border-radius:8px;background:var(--pl);color:var(--purple);border:none;cursor:pointer;font-family:inherit;font-weight:600;">↩ 복원</button>' +
+        '<button onclick="deleteShow(\'' + s.id + '\')" style="flex:1;padding:7px;font-size:12px;border-radius:8px;background:#fdeaea;color:#c0392b;border:none;cursor:pointer;font-family:inherit;font-weight:600;">🗑 삭제</button>' +
+        '</div></div>';
+    }).join('');
+  }
+  openModal('m-archive');
+}
+
+function unarchiveShow(id) {
+  var s = getShow(id); if (!s) return;
+  s.archived = false;
+  save(); renderHome(); openArchive();
 }
 
 // ════════════════════════════════════════
 // 공연별 도장판 목록
 // ════════════════════════════════════════
 function renderShowSc() {
-  var s = getShow(curShow);
-  if (!s) return;
+  var s = getShow(curShow); if (!s) return;
   document.getElementById('show-title').textContent = s.name;
   document.getElementById('show-sub').textContent = '도장판 ' + s.pads.length + '개';
   var c = document.getElementById('show-list');
@@ -520,14 +635,11 @@ function renderShowSc() {
     return;
   }
   c.innerHTML = s.pads.map(function(p, i) {
-    var recs = p.records || [];
-    var filled = recs.length;
+    var recs = p.records || [], filled = recs.length;
     var dots = Array.from({ length: p.total }, function(_, j) {
-      return '<div style="width:26px;height:26px;border-radius:50%;border:2px solid ' +
-        (j < filled ? 'var(--navy)' : 'var(--brd)') +
-        ';display:inline-flex;align-items:center;justify-content:center;font-size:13px;background:' +
-        (j < filled ? 'var(--pll)' : 'var(--sur)') + ';">' +
-        (j < filled ? p.emoji : '') + '</div>';
+      var on = j < filled;
+      var click = on ? 'onclick="event.stopPropagation();openStampRecord(' + db.shows.indexOf(s) + ',' + i + ',' + j + ')"' : '';
+      return '<div ' + click + ' style="width:26px;height:26px;border-radius:50%;border:2px solid ' + (on ? 'var(--navy)' : 'var(--brd)') + ';display:inline-flex;align-items:center;justify-content:center;font-size:13px;background:' + (on ? 'var(--pll)' : 'var(--sur)') + ';cursor:' + (on ? 'pointer' : 'default') + ';">' + (on ? p.emoji : '') + '</div>';
     }).join('');
     var rewText = p.rewards.map(function(r) { return r.n + '회 → ' + r.label; }).join(' · ') || '혜택 미설정';
     return '<div class="card">' +
@@ -543,66 +655,47 @@ function renderShowSc() {
   }).join('');
 }
 
+function goShow(id) {
+  curShow = id;
+  stack.push('show');
+  renderShowSc();
+  showSc('show');
+}
+
 // ════════════════════════════════════════
 // 도장판 추가 / 수정
 // ════════════════════════════════════════
 function openAddPad() {
   document.getElementById('pad-modal-title').textContent = '새 도장판 만들기';
   document.getElementById('editing-pad-idx').value = '-1';
-  padCnt = 5;
-  selEmoji = '🎭';
+  padCnt = 5; selEmoji = '🎭';
   document.getElementById('cnt-val').textContent = 5;
   document.getElementById('rew-rows').innerHTML = '';
-  addRewRow('rew-rows');
-  renderEmojiGrid();
-  openModal('m-add-pad');
+  addRewRow('rew-rows'); initEpicker(); openModal('m-add-pad');
 }
 
 function openEditPad(idx) {
-  var s = getShow(curShow);
-  var p = s && s.pads[idx];
-  if (!p) return;
+  var s = getShow(curShow), p = s && s.pads[idx]; if (!p) return;
   document.getElementById('pad-modal-title').textContent = '도장판 수정';
   document.getElementById('editing-pad-idx').value = idx;
-  padCnt = p.total;
-  selEmoji = p.emoji || '🎭';
+  padCnt = p.total; selEmoji = p.emoji || '🎭';
   document.getElementById('cnt-val').textContent = padCnt;
-  var c = document.getElementById('rew-rows');
-  c.innerHTML = '';
+  var c = document.getElementById('rew-rows'); c.innerHTML = '';
   p.rewards.forEach(function(r) {
-    var row = document.createElement('div');
-    row.className = 'rrow';
+    var row = document.createElement('div'); row.className = 'rrow';
     row.innerHTML = '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;"><input class="inp" value="' + r.label + '"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(row);
   });
-  renderEmojiGrid();
-  openModal('m-add-pad');
+  initEpicker(); openModal('m-add-pad');
 }
 
-function changeCnt(d) {
-  padCnt = Math.max(1, Math.min(20, padCnt + d));
-  document.getElementById('cnt-val').textContent = padCnt;
-}
+function changeCnt(d) { padCnt = Math.max(1, Math.min(20, padCnt + d)); document.getElementById('cnt-val').textContent = padCnt; }
 
-function addRewRow(containerId) {
-  var c = document.getElementById(containerId);
-  var row = document.createElement('div');
-  row.className = 'rrow';
+function addRewRow(cid) {
+  var c = document.getElementById(cid);
+  var row = document.createElement('div'); row.className = 'rrow';
   row.innerHTML = '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;"><input class="inp" placeholder="혜택 내용"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
   c.appendChild(row);
-}
-
-function renderEmojiGrid() {
-  var grid = document.getElementById('emoji-grid');
-  grid.innerHTML = EMOJIS.map(function(e) {
-    return '<div class="ep' + (e === selEmoji ? ' on' : '') + '" onclick="selectEmoji(\'' + e + '\')">' + e + '</div>';
-  }).join('');
-}
-
-function selectEmoji(e) {
-  selEmoji = e;
-  document.querySelectorAll('.ep').forEach(function(el) { el.classList.remove('on'); });
-  event.target.classList.add('on');
 }
 
 function copyRewards() {
@@ -610,121 +703,86 @@ function copyRewards() {
   if (!s || !s.pads.length) { alert('다른 도장판이 없어요'); return; }
   var src = s.pads.find(function(p) { return p.rewards && p.rewards.length; });
   if (!src) { alert('혜택이 설정된 도장판이 없어요'); return; }
-  var c = document.getElementById('rew-rows');
-  c.innerHTML = '';
+  var c = document.getElementById('rew-rows'); c.innerHTML = '';
   src.rewards.forEach(function(r) {
-    var row = document.createElement('div');
-    row.className = 'rrow';
+    var row = document.createElement('div'); row.className = 'rrow';
     row.innerHTML = '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;"><input class="inp" value="' + r.label + '"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(row);
   });
 }
 
 function savePad() {
-  var s = getShow(curShow);
-  if (!s) return;
-  var rows = document.querySelectorAll('#rew-rows .rrow');
-  var rewards = [];
+  var s = getShow(curShow); if (!s) return;
+  var rows = document.querySelectorAll('#rew-rows .rrow'), rewards = [];
   rows.forEach(function(row) {
     var ins = row.querySelectorAll('input');
-    var n = parseInt(ins[0].value);
-    var label = ins[1].value.trim();
+    var n = parseInt(ins[0].value), label = ins[1].value.trim();
     if (n && label) rewards.push({ n: n, label: label });
   });
   var editIdx = parseInt(document.getElementById('editing-pad-idx').value);
   if (editIdx >= 0) {
-    var p = s.pads[editIdx];
-    if (!p) return;
-    p.total = padCnt;
-    p.emoji = selEmoji;
-    p.rewards = rewards;
+    var p = s.pads[editIdx]; if (!p) return;
+    p.total = padCnt; p.emoji = selEmoji; p.rewards = rewards;
     if (p.records && p.records.length > p.total) p.records = p.records.slice(0, p.total);
   } else {
     s.pads.push({ total: padCnt, emoji: selEmoji, rewards: rewards, records: [] });
   }
-  save();
-  closeModal('m-add-pad');
-  renderShowSc();
+  save(); closeModal('m-add-pad'); renderShowSc();
 }
 
 function deletePad(idx) {
-  if (!confirm('도장판 #' + (idx+1) + '을 삭제할까요?\n찍힌 도장 기록도 모두 삭제됩니다.')) return;
-  var s = getShow(curShow);
-  if (!s) return;
+  if (!confirm('도장판 #' + (idx+1) + '을 삭제할까요?')) return;
+  var s = getShow(curShow); if (!s) return;
+  db.manualB = db.manualB.filter(function(b) { return !(b.sid === curShow && b.pi === idx); });
   s.pads.splice(idx, 1);
-  save();
-  renderShowSc();
+  db.manualB.forEach(function(b) { if (b.sid === curShow && b.pi > idx) b.pi--; });
+  save(); renderShowSc();
 }
 
 // ════════════════════════════════════════
 // 도장판 상세
 // ════════════════════════════════════════
-function goDet(sid, pi) {
-  curShow = sid;
-  curPad = pi;
-  stack.push('detail');
-  renderDet();
-  showSc('detail');
-}
+function goDet(sid, pi) { curShow = sid; curPad = pi; stack.push('detail'); renderDet(); showSc('detail'); }
 
 function renderDet() {
-  var s = getShow(curShow);
-  var p = s && s.pads[curPad];
-  if (!p) return;
+  var s = getShow(curShow), p = s && s.pads[curPad]; if (!p) return;
   document.getElementById('d-show').textContent = s.name;
   document.getElementById('d-pad').textContent = '도장판 #' + (curPad + 1);
   document.getElementById('d-goal').textContent = p.rewards.map(function(r) { return r.n + '회 → ' + r.label; }).join(' · ') || '혜택 미설정';
-
   var recs = (p.records || []).slice().sort(function(a, b) { return a.date.localeCompare(b.date); });
   var cols = Math.min(p.total, 5);
   var dc = document.getElementById('d-stamps');
   dc.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
-
   dc.innerHTML = Array.from({ length: p.total }, function(_, i) {
     if (i < recs.length) {
       var r = recs[i];
-      var origIdx = (p.records || []).findIndex(function(rec) {
-        return rec.date === r.date && rec.time === r.time && rec.memo === r.memo;
-      });
-      return '<div class="scell">' +
-        '<div class="scirc on">' + p.emoji + '</div>' +
+      var origIdx = (p.records || []).findIndex(function(rec) { return rec.date === r.date && rec.time === r.time && rec.memo === r.memo; });
+      return '<div class="scell"><div class="scirc on">' + p.emoji + '</div>' +
         '<div class="sdate">' + r.date.slice(5) + '<br>' + (r.time === 'night' ? '🌙' : '🌤') + '</div>' +
         (r.memo ? '<div class="sdate" style="color:var(--purple);">' + r.memo.slice(0, 6) + '</div>' : '') +
-        '<div class="sbtns">' +
-        '<button class="sedit" onclick="openEditStamp(' + origIdx + ')">수정</button>' +
-        '<button class="sdel" onclick="deleteStamp(' + origIdx + ')">✕</button>' +
-        '</div></div>';
+        '<div class="sbtns"><button class="sedit" onclick="openEditStamp(' + origIdx + ')">수정</button>' +
+        '<button class="sdel" onclick="deleteStamp(' + origIdx + ')">✕</button></div></div>';
     }
     return '<div class="scell"><div class="scirc"></div><div class="sdate">—</div></div>';
   }).join('');
-
-  var filled = recs.length;
-  var rc = document.getElementById('d-rewards');
-  if (!p.rewards.length) {
-    rc.innerHTML = '<div style="color:var(--mu);font-size:13px;padding:10px 0;">혜택이 설정되지 않았어요</div>';
-    return;
-  }
+  var filled = recs.length, rc = document.getElementById('d-rewards');
+  if (!p.rewards.length) { rc.innerHTML = '<div style="color:var(--mu);font-size:13px;padding:10px 0;">혜택이 설정되지 않았어요</div>'; return; }
   rc.innerHTML = p.rewards.map(function(r) {
     var done = filled >= r.n;
-    return '<div class="rwitem ' + (done ? 'rwdone' : 'rwtodo') + '">' +
-      '<span class="rc">' + r.n + '회</span>' +
-      '<span style="flex:1;">' + r.label + '</span>' +
-      (done ? '<span style="color:var(--gn);">✓ 달성!</span>' : '<span style="color:var(--mu);font-size:12px;">' + (r.n - filled) + '개 남음</span>') +
-      '</div>';
+    return '<div class="rwitem ' + (done ? 'rwdone' : 'rwtodo') + '"><span class="rc">' + r.n + '회</span><span style="flex:1;">' + r.label + '</span>' +
+      (done ? '<span style="color:var(--gn);">✓ 달성!</span>' : '<span style="color:var(--mu);font-size:12px;">' + (r.n - filled) + '개 남음</span>') + '</div>';
   }).join('');
 }
 
-let stampCnt = 1;
-
+// ════════════════════════════════════════
+// 도장 찍기
+// ════════════════════════════════════════
 function selectStampCnt(btn, n) {
   stampCnt = n;
   document.querySelectorAll('#stamp-cnt-row .tgl').forEach(function(b) { b.classList.remove('on'); });
   btn.classList.add('on');
 }
 
-// ════════════════════════════════════════
-// 도장 찍기
-// ════════════════════════════════════════
 function openStampModal() {
   document.getElementById('s-date').value = today();
   setTime('stamp', 'day');
@@ -735,58 +793,37 @@ function openStampModal() {
 }
 
 function doStamp() {
-  var s = getShow(curShow);
-  var p = s && s.pads[curPad];
-  if (!p) return;
+  var s = getShow(curShow), p = s && s.pads[curPad]; if (!p) return;
   if (!p.records) p.records = [];
   var remaining = p.total - p.records.length;
   if (remaining <= 0) { alert('도장판이 이미 완성됐어요!'); return; }
   var date = document.getElementById('s-date').value;
   var memo = document.getElementById('s-memo').value.trim();
+  var useCalendar = document.getElementById('s-calendar').checked;
   if (!date) { alert('날짜를 입력해주세요'); return; }
-
   var toAdd = Math.min(stampCnt, remaining);
   for (var i = 0; i < toAdd; i++) {
-    p.records.push({ date: date, time: times.stamp, memo: i === 0 ? memo : '', show: s.name });
+    p.records.push({ date: date, time: times.stamp, memo: memo, calendar: useCalendar, multi: stampCnt });
   }
   checkRewards(curShow, curPad);
-
-  var overflow = stampCnt - toAdd;
-  var carryMsg = '';
+  var overflow = stampCnt - toAdd, carryMsg = '';
   if (overflow > 0) {
-    var newPad = {
-      total: p.total,
-      emoji: p.emoji,
-      rewards: JSON.parse(JSON.stringify(p.rewards)),
-      records: []
-    };
+    var newPad = { total: p.total, emoji: p.emoji, rewards: JSON.parse(JSON.stringify(p.rewards)), records: [] };
     for (var j = 0; j < overflow; j++) {
-      newPad.records.push({ date: date, time: times.stamp, memo: memo, show: s.name });
+      newPad.records.push({ date: date, time: times.stamp, memo: memo, calendar: useCalendar, multi: stampCnt });
     }
     s.pads.push(newPad);
-    var newPadIdx = s.pads.length - 1;
-    checkRewards(curShow, newPadIdx);
-    carryMsg = '\n\n🎉 도장판 #' + (curPad + 1) + ' 완성!\n남은 ' + overflow + '개는 새 도장판 #' + s.pads.length + '에 자동 이월됐어요!';
+    checkRewards(curShow, s.pads.length - 1);
+    carryMsg = '\n\n🎉 남은 ' + overflow + '개는 새 도장판 #' + s.pads.length + '에 자동 이월됐어요!';
   }
-
-  save();
-  closeModal('m-stamp');
-  renderDet();
-  renderShowSc();
-
-  var baseMsg = '도장 ' + toAdd + '개 적립! (' + p.records.length + '/' + p.total + ')';
-  alert('✓ ' + baseMsg + carryMsg);
+  save(); closeModal('m-stamp'); renderDet(); renderShowSc();
+  alert('✓ 도장 ' + toAdd + '개 적립! (' + p.records.length + '/' + p.total + ')' + carryMsg);
 }
 
-// ════════════════════════════════════════
-// 도장 수정 / 삭제
-// ════════════════════════════════════════
 function openEditStamp(idx) {
   editStampIdx = idx;
-  var p = getShow(curShow) && getShow(curShow).pads[curPad];
-  if (!p) return;
-  var r = (p.records || [])[idx];
-  if (!r) return;
+  var p = getShow(curShow) && getShow(curShow).pads[curPad]; if (!p) return;
+  var r = (p.records || [])[idx]; if (!r) return;
   document.getElementById('e-date').value = r.date;
   document.getElementById('e-memo').value = r.memo || '';
   setTime('edit', r.time || 'day');
@@ -794,38 +831,83 @@ function openEditStamp(idx) {
 }
 
 function saveStampEdit() {
-  var p = getShow(curShow) && getShow(curShow).pads[curPad];
-  if (!p) return;
-  var r = (p.records || [])[editStampIdx];
-  if (!r) return;
+  var p = getShow(curShow) && getShow(curShow).pads[curPad]; if (!p) return;
+  var r = (p.records || [])[editStampIdx]; if (!r) return;
   r.date = document.getElementById('e-date').value;
   r.time = times.edit;
   r.memo = document.getElementById('e-memo').value.trim();
-  save();
-  closeModal('m-edit-stamp');
-  renderDet();
-  renderShowSc();
+  save(); closeModal('m-edit-stamp'); renderDet(); renderShowSc();
 }
 
 function deleteStamp(idx) {
   if (!confirm('이 도장을 삭제할까요?')) return;
-  var p = getShow(curShow) && getShow(curShow).pads[curPad];
-  if (!p) return;
+  var p = getShow(curShow) && getShow(curShow).pads[curPad]; if (!p) return;
   p.records.splice(idx, 1);
-  save();
-  renderDet();
-  renderShowSc();
+  save(); renderDet(); renderShowSc();
+}
+
+function openStampRecord(si, pi, ri) {
+  var s = db.shows[si], p = s.pads[pi], r = p.records[ri]; if (!r) return;
+  selectedStampRecord = { si: si, pi: pi, ri: ri };
+  document.getElementById('stamp-detail-body').innerHTML =
+    '<div style="line-height:1.8;">' +
+    '<div style="font-size:20px;font-weight:800;">' + s.name + '</div>' +
+    '<div>📅 ' + r.date + '</div>' +
+    '<div>' + (r.time === 'night' ? '🌙 밤공' : '🌤 낮공') + '</div>' +
+    '<div>🎟 ' + (r.multi === 3 ? '트리플 적립' : r.multi === 2 ? '더블 적립' : '일반 적립') + '</div>' +
+    (r.memo ? '<div>📝 ' + r.memo + '</div>' : '') +
+    '</div>';
+  document.getElementById('stamp-delete-btn').onclick = deleteStampRecord;
+  document.getElementById('stamp-edit-btn').onclick = editStampRecord;
+  openModal('m-stamp-detail');
+}
+
+function deleteStampRecord() {
+  if (!selectedStampRecord) return;
+  var si = selectedStampRecord.si, pi = selectedStampRecord.pi, ri = selectedStampRecord.ri;
+  if (!confirm('이 기록을 삭제할까요?')) return;
+  db.shows[si].pads[pi].records.splice(ri, 1);
+  save(); closeModal('m-stamp-detail'); renderHome(); renderShowSc(); renderB('all'); initCal();
+}
+
+function editStampRecord() {
+  if (!selectedStampRecord) return;
+  var si = selectedStampRecord.si, pi = selectedStampRecord.pi, ri = selectedStampRecord.ri;
+  var r = db.shows[si].pads[pi].records[ri];
+  var memo = prompt('메모 수정', r.memo || '');
+  if (memo === null) return;
+  r.memo = memo;
+  save(); openStampRecord(si, pi, ri); renderHome(); renderShowSc(); renderB('all'); initCal();
 }
 
 // ════════════════════════════════════════
 // 관람 등록
 // ════════════════════════════════════════
+function selectRecordCnt(btn, n) {
+  recordStampCnt = n;
+  document.querySelectorAll('#record-cnt-row .tgl').forEach(function(b) { b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
 function updatePadSel() {
-  var sid = document.getElementById('r-show').value;
-  var s = getShow(sid);
+  var sid = document.getElementById('r-show').value, s = getShow(sid);
   document.getElementById('r-pad').innerHTML = (s ? s.pads : []).map(function(p, i) {
     return '<option value="' + i + '">도장판 #' + (i+1) + ' (' + (p.records||[]).length + '/' + p.total + ')</option>';
   }).join('');
+}
+
+function openRecordModal() {
+  var activeShows = db.shows.filter(function(s) { return !s.archived; });
+  var c = document.getElementById('r-show');
+  c.innerHTML = activeShows.map(function(s) {
+    return '<option value="' + s.id + '">' + s.name + '</option>';
+  }).join('');
+  updatePadSel();
+  document.getElementById('r-date').value = today();
+  setTime('rec', 'day');
+  recordStampCnt = 1;
+  document.querySelectorAll('#record-cnt-row .tgl').forEach(function(b, i) { b.classList.toggle('on', i === 0); });
+  openModal('m-record');
 }
 
 function addRecord() {
@@ -835,57 +917,56 @@ function addRecord() {
   var price = parseInt(document.getElementById('r-price').value) || 0;
   var memo = document.getElementById('r-memo').value.trim();
   if (!sid || isNaN(pi) || !date) { alert('필수 항목을 입력해주세요'); return; }
-  var s = getShow(sid);
-  var p = s && s.pads[pi];
-  if (!p) return;
+  var s = getShow(sid); if (!s) return;
+  var p = s.pads[pi]; if (!p) return;
   if (!p.records) p.records = [];
-  if (p.records.length >= p.total) { alert('도장판이 이미 완성됐어요!'); return; }
-  p.records.push({ date: date, time: times.rec, price: price, memo: memo, show: s.name });
+  var remaining = p.total - p.records.length;
+  var toAdd = Math.min(recordStampCnt, remaining);
+  for (var i = 0; i < toAdd; i++) {
+    p.records.push({ date: date, time: times.rec, price: price, memo: memo, multi: recordStampCnt, calendar: true });
+  }
   checkRewards(sid, pi);
-  save();
-  closeModal('m-record');
+  var overflow = recordStampCnt - toAdd;
+  if (overflow > 0) {
+    if (confirm('현재 도장판이 가득 찼어요.\n새 도장판을 자동 생성할까요?')) {
+      var newPad = { total: p.total, emoji: p.emoji, rewards: JSON.parse(JSON.stringify(p.rewards)), records: [] };
+      for (var j = 0; j < overflow; j++) {
+        newPad.records.push({ date: date, time: times.rec, price: price, memo: memo, multi: recordStampCnt, calendar: true });
+      }
+      s.pads.push(newPad);
+      checkRewards(sid, s.pads.length - 1);
+    }
+  }
+  save(); closeModal('m-record');
   document.getElementById('r-price').value = '';
   document.getElementById('r-memo').value = '';
-  renderHome();
-  initCal();
-  alert('✓ 등록됐어요! (' + p.records.length + '/' + p.total + ')');
+  renderHome(); renderShowSc(); renderB('all'); initCal();
+  alert('✓ 관람 등록 완료!');
 }
 
+// ════════════════════════════════════════
+// 혜택 달성 체크 — 도장판 저장 시 자동 연동
+// ════════════════════════════════════════
 function checkRewards(sid, pi) {
-  var s = getShow(sid);
-  var p = s && s.pads[pi];
-  if (!p) return;
+  var s = getShow(sid), p = s && s.pads[pi]; if (!p) return;
   var filled = (p.records || []).length;
-  p.rewards.forEach(function(r) {
-    if (filled === r.n) {
+  (p.rewards || []).forEach(function(r) {
+    if (filled >= r.n) {
       var exists = db.manualB.find(function(b) {
         return b.sid === sid && b.pi === pi && b.label === r.label && b.auto;
       });
       if (!exists) {
-        db.manualB.push({ id: uid(), sid: sid, pi: pi, label: r.label, total: 1, used: 0, auto: true });
+        db.manualB.push({ id: uid(), sid: sid, pi: pi, label: r.label, total: 1, used: false, auto: true });
       }
     }
   });
-}
-
-function openRecordModal() {
-  document.getElementById('r-show').innerHTML = db.shows.map(function(s) {
-    return '<option value="' + s.id + '">' + s.name + '</option>';
-  }).join('');
-  updatePadSel();
-  document.getElementById('r-date').value = today();
-  setTime('rec', 'day');
-  openModal('m-record');
 }
 
 // ════════════════════════════════════════
 // 캘린더
 // ════════════════════════════════════════
 function initCal() {
-  var n = new Date();
-  calY = n.getFullYear();
-  calM = n.getMonth();
-  renderCal();
+  var n = new Date(); calY = n.getFullYear(); calM = n.getMonth(); renderCal();
 }
 
 function changeMonth(d) {
@@ -900,36 +981,33 @@ function renderCal() {
   var first = new Date(calY, calM, 1).getDay();
   var days = new Date(calY, calM + 1, 0).getDate();
   var prev = new Date(calY, calM, 0).getDate();
-  var td = today();
-  var html = '';
-
+  var td = today(), html = '';
   for (var i = 0; i < first; i++) {
     html += '<div class="calcell faded"><div class="calnum">' + (prev - first + 1 + i) + '</div></div>';
   }
-
   for (var d = 1; d <= days; d++) {
     var ds = calY + '-' + String(calM + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    var isToday = ds === td;
-    var recs = [];
+    var isToday = (ds === td);
+    var uniqueMap = {};
     db.shows.forEach(function(s, si) {
-      s.pads.forEach(function(p) {
-        (p.records || []).forEach(function(r) {
-          if (r.date === ds && recs.length === 0) {
-            recs.push({ r: r, s: s, si: si });
+      s.pads.forEach(function(p, pi) {
+        (p.records || []).forEach(function(r, ri) {
+          if (r.date !== ds || !r.calendar) return;
+          var key = s.name + '_' + r.time;
+          if (!uniqueMap[key]) {
+            uniqueMap[key] = { show: s.name, time: r.time, color: COLORS[si % COLORS.length], si: si, pi: pi, ri: ri };
           }
         });
       });
     });
-    var posHtml = '';
-    if (recs.length) {
-      posHtml = '<div class="calposters">' + recs.map(function(item) {
-        return '<div class="calposter">' + item.r.show + '</div>';
-      }).join('') + '</div>';
-    }
-    html += '<div class="calcell' + (isToday ? ' today' : '') + '">' +
-      '<div class="calnum">' + d + '</div>' + posHtml + '</div>';
+    var recs = Object.values(uniqueMap);
+    recs.sort(function(a, b) { return a.time === b.time ? 0 : a.time === 'day' ? -1 : 1; });
+    var posHtml = recs.length ? '<div class="calposters">' + recs.map(function(item) {
+      return '<div class="calposter" style="background:' + item.color + ';" onclick="openCalEdit(' + item.si + ',' + item.pi + ',' + item.ri + ')">' +
+        (item.time === 'day' ? '🌤 ' : '🌙 ') + item.show + '</div>';
+    }).join('') + '</div>' : '';
+    html += '<div class="calcell' + (isToday ? ' today' : '') + '"><div class="calnum">' + d + '</div>' + posHtml + '</div>';
   }
-
   var rem = 42 - first - days;
   for (var j = 1; j <= rem; j++) {
     html += '<div class="calcell faded"><div class="calnum">' + j + '</div></div>';
@@ -937,93 +1015,235 @@ function renderCal() {
   document.getElementById('cal-grid').innerHTML = html;
 }
 
+function openCalEdit(si, pi, ri) {
+  var s = db.shows[si], p = s.pads[pi], r = p.records[ri]; if (!r) return;
+  selectedStampRecord = { si: si, pi: pi, ri: ri };
+  document.getElementById('stamp-detail-body').innerHTML =
+    '<div style="line-height:1.8;">' +
+    '<div style="font-size:20px;font-weight:800;">' + s.name + '</div>' +
+    '<div>📅 ' + r.date + '</div>' +
+    '<div>' + (r.time === 'night' ? '🌙 밤공' : '🌤 낮공') + '</div>' +
+    '<div>🎟 ' + (r.multi === 3 ? '트리플 적립' : r.multi === 2 ? '더블 적립' : '일반 적립') + '</div>' +
+    (r.memo ? '<div>📝 ' + r.memo + '</div>' : '') +
+    '</div>';
+  document.getElementById('stamp-delete-btn').onclick = deleteStampRecord;
+  document.getElementById('stamp-edit-btn').onclick = editStampRecord;
+  openModal('m-stamp-detail');
+}
+
 // ════════════════════════════════════════
-// 혜택
+// 혜택 탭 — 도장판 혜택 자동 연동 포함
 // ════════════════════════════════════════
 function renderB(filter) {
   var c = document.getElementById('b-list');
   var html = '';
 
-  db.shows.forEach(function(s) {
-    var mergedMap = {};
-    db.manualB.filter(function(b) { return b.sid === s.id; }).forEach(function(b) {
-      if (mergedMap[b.label]) {
-        mergedMap[b.label].total += b.total;
-        mergedMap[b.label].used += b.used;
-        mergedMap[b.label].ids.push(b.id);
-      } else {
-        mergedMap[b.label] = { label: b.label, total: b.total, used: b.used, ids: [b.id], isLocked: false };
-      }
-    });
-    var earned = Object.values(mergedMap);
+  var activeShows = (db.shows || []).filter(function(s) {
+    return !s.archived;
+  });
 
-    var lockedMap = {};
-    s.pads.forEach(function(p, pi) {
+  activeShows.forEach(function(s) {
+
+    var grouped = {};
+
+    // 자동 혜택 묶기
+    (s.pads || []).forEach(function(p) {
       var filled = (p.records || []).length;
-      p.rewards.forEach(function(r) {
-        if (filled < r.n) {
-          var already = db.manualB.find(function(b) {
-            return b.sid === s.id && b.pi === pi && b.label === r.label;
-          });
-          if (!already) {
-            if (lockedMap[r.label]) {
-              lockedMap[r.label].need = Math.min(lockedMap[r.label].need, r.n - filled);
-            } else {
-              lockedMap[r.label] = { label: r.label, need: r.n - filled, isLocked: true };
-            }
-          }
+
+      (p.rewards || []).forEach(function(r) {
+
+        if (!grouped[r.label]) {
+          grouped[r.label] = {
+            label: r.label,
+            total: 0,
+            used: 0,
+            locked: 0
+          };
         }
+
+        if (filled >= r.n) {
+          grouped[r.label].total++;
+
+          if (r.used) grouped[r.label].used++;
+        } else {
+          grouped[r.label].locked++;
+        }
+
       });
     });
-    var locked = Object.values(lockedMap);
 
-    var all = earned.concat(locked);
+    // 수동 혜택
+    (db.manualB || []).forEach(function(b) {
 
-    var filtered = all.filter(function(b) {
-      if (filter === 'all') return true;
-      if (filter === 'ok') return !b.isLocked && (b.total - b.used) > 0;
-      if (filter === 'used') return !b.isLocked && b.used > 0;
-      if (filter === 'locked') return b.isLocked;
-      return true;
+      if (b.sid !== s.id || b.auto) return;
+
+      if (!grouped[b.label]) {
+        grouped[b.label] = {
+          label: b.label,
+          total: 0,
+          used: 0,
+          locked: 0
+        };
+      }
+
+      grouped[b.label].total += (b.total || 1);
+
+      if (b.used) {
+        grouped[b.label].used += (b.total || 1);
+      }
+
     });
 
-    if (!filtered.length) return;
-    html += '<div class="bstit">' + s.name + '</div>';
-    filtered.forEach(function(b) {
-      if (b.isLocked) {
-        html += '<div class="blocked"><span style="font-weight:700;">' + b.label + '</span> <span style="color:var(--mu2);">· ' + b.need + '개 남음</span></div>';
-      } else {
-        var avail = b.total - b.used;
-        html += '<div class="bcard">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
-          '<div style="font-size:14px;font-weight:700;color:var(--navy);">🎟 ' + b.label + '</div>' +
-          '<div style="font-size:11px;color:var(--mu);">누적 ' + b.total + '개</div></div>' +
-          '<div class="cntrow">' +
-          '<div class="cntbox cok"><div class="n">' + avail + '</div><div class="l">미사용</div></div>' +
-          '<div class="cntbox cno"><div class="n">' + b.used + '</div><div class="l">사용 완료</div></div>' +
+    var items = '';
+
+    Object.values(grouped).forEach(function(g) {
+
+      var remain = g.total - g.used;
+
+var status;
+
+if (g.total <= 0) {
+  status = 'locked';
+} else if (remain <= 0) {
+  status = 'used';
+} else {
+  status = 'ok';
+}
+
+      if (filter !== 'all' && filter !== status) return;
+
+      items +=
+        '<div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;">' +
+
+          '<div style="flex:1;">' +
+
+            '<div style="font-size:14px;font-weight:700;color:var(--tx);">' +
+              g.label +
+            '</div>' +
+
+            '<div style="font-size:11px;color:var(--mu);margin-top:4px;">' +
+              '총 ' + g.total + '개' +
+            '</div>' +
+
+            '<div style="font-size:11px;font-weight:700;color:' +
+              (remain > 0 ? 'var(--gn)' : 'var(--mu)') +
+              ';margin-top:3px;">' +
+
+               (status === 'locked'
+  ? '아직 달성하지 못했어요'
+  : remain > 0
+    ? '사용 가능 ' + remain + '개 남음'
+    : '모두 사용 완료') +
+
+            '</div>' +
+
           '</div>' +
-          '<button class="actbtn" onclick="toggleUse(' + JSON.stringify(b.ids).replace(/"/g, '&quot;') + ',false)">사용하기</button>' +
-          '</div>';
+
+           (
+  status === 'locked'
+    ? '<div style="font-size:11px;font-weight:700;color:var(--mu);">미달성</div>'
+    : remain > 0
+      ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;">사용하기</button>'
+      : '<div style="font-size:11px;font-weight:700;color:var(--mu);">완료</div>'
+) +
+
+        '</div>';
+
+    });
+
+    if (!items) return;
+
+    var collapsed = benefitCollapsed[s.id];
+
+    html +=
+      '<div style="margin:0 20px 12px;border:1px solid var(--brd);border-radius:14px;overflow:hidden;">' +
+
+        '<div onclick="toggleBenefitGroup(\'' + s.id + '\')" style="padding:14px 16px;background:#fff;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">' +
+
+          '<div style="font-size:15px;font-weight:800;color:var(--navy);">' +
+            s.name +
+          '</div>' +
+
+          '<div style="font-size:12px;color:var(--mu);">' +
+            (collapsed ? '펼치기 ▾' : '접기 ▴') +
+          '</div>' +
+
+        '</div>' +
+
+        (
+          collapsed
+          ? ''
+          : '<div style="padding:10px;background:#f9f9f9;border-top:1px solid #eee;">' +
+              items +
+            '</div>'
+        ) +
+
+      '</div>';
+
+  });
+
+  if (!html) {
+    html =
+      '<div style="text-align:center;padding:50px;color:var(--mu);font-size:13px;">해당하는 혜택이 없어요</div>';
+  }
+
+  c.innerHTML = html;
+}
+
+// ✅ 도장판 혜택 사용 처리
+function usePadReward(sid, rewardLabel) {
+  var s = getShow(sid);
+  if (!s) return;
+
+  var available = [];
+
+  (s.pads || []).forEach(function(p) {
+    var filled = (p.records || []).length;
+
+    (p.rewards || []).forEach(function(r) {
+      if (r.label === rewardLabel && filled >= r.n && !r.used) {
+        available.push(r);
       }
     });
   });
 
-  c.innerHTML = html || '<div style="text-align:center;padding:40px 20px;color:var(--mu);font-size:14px;">혜택이 없어요</div>';
-}
+  if (!available.length) {
+    alert('사용 가능한 혜택이 없어요');
+    return;
+  }
 
-function filterB(f, btn) {
-  document.querySelectorAll('.fb').forEach(function(b) { b.classList.remove('on'); });
-  btn.classList.add('on');
-  renderB(f);
-}
+  available[0].used = true;
 
-function toggleUse(ids, used) {
-  ids.forEach(function(id) {
-    var b = db.manualB.find(function(x) { return x.id === id; });
-    if (b) b.used = used ? 0 : b.total;
-  });
   save();
-  renderB('all');
+  renderB(currentBenefitFilter);
+
+  alert(
+    '"' + rewardLabel + '" 사용 완료!\n\n남은 개수: ' + (available.length - 1) + '개'
+  );
+}
+
+// ✅ 수동 입력 혜택 사용 처리
+function useManualBById(id) {
+  var b = db.manualB.find(function(x) { return x.id === id; });
+  if (!b) return;
+  if (!confirm(
+  particle('"' + (b.label || b.name) + '"', '을를') +
+  ' 사용 처리할까요?'
+)) return;
+  b.used = true;
+  save(); renderB('all');
+}
+
+function filterB(filter, btn) {
+  currentBenefitFilter = filter;
+
+  document.querySelectorAll('.fb').forEach(function(b) {
+    b.classList.remove('on');
+  });
+
+  btn.classList.add('on');
+
+  renderB(filter);
 }
 
 function openManualBenefit() {
@@ -1035,28 +1255,30 @@ function openManualBenefit() {
 
 function addManualB() {
   var sid = document.getElementById('b-show').value;
-  var name = document.getElementById('b-name').value.trim();
-  var count = parseInt(document.getElementById('b-count').value) || 1;
-  if (!sid || !name) { alert('필수 항목을 입력해주세요'); return; }
-  db.manualB.push({ id: uid(), sid: sid, label: name, total: count, used: 0, auto: false });
-  save();
-  closeModal('m-add-benefit');
+  var label = document.getElementById('b-name').value.trim();
+  var total = parseInt(document.getElementById('b-count').value) || 1;
+  if (!label) { alert('혜택 이름을 입력해주세요'); return; }
+  db.manualB.push({ id: uid(), sid: sid, pi: -1, label: label, total: total, used: false, auto: false });
+  save(); closeModal('m-add-benefit');
   document.getElementById('b-name').value = '';
-  document.getElementById('b-count').value = '1';
   renderB('all');
 }
+function toggleBenefitGroup(id) {
+  benefitCollapsed[id] = !benefitCollapsed[id];
+  renderB(currentBenefitFilter);
+}
 
+// ════════════════════════════════════════
 // 초기화
+// ════════════════════════════════════════
+document.getElementById('cal-reg-btn').addEventListener('click', openRecordModal);
 renderHome();
+initCal();
 </script>
-  <script type="module">
-  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js';
 
-  const picker = document.querySelector('#picker');
-
-  picker.addEventListener('emoji-click', event => {
-    selEmoji = event.detail.unicode;
-  });
+<script type="module">
+import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js';
 </script>
+
 </body>
 </html>
