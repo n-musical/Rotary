@@ -683,7 +683,14 @@ function openEditPad(idx) {
   var c = document.getElementById('rew-rows'); c.innerHTML = '';
   p.rewards.forEach(function(r) {
     var row = document.createElement('div'); row.className = 'rrow';
-    row.innerHTML = '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;"><input class="inp" value="' + r.label + '"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
+    row.innerHTML =
+  '<input class="inp" type="number" value="' + r.n + '" style="width:70px;flex-shrink:0;">' +
+
+  '<input class="inp" value="' + r.label + '">' +
+
+  '<input class="inp" type="number" value="' + (r.count || 1) + '" min="1" style="width:70px;flex-shrink:0;">' +
+
+  '<button class="rmb" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(row);
   });
   initEpicker(); openModal('m-add-pad');
@@ -693,9 +700,14 @@ function changeCnt(d) { padCnt = Math.max(1, Math.min(20, padCnt + d)); document
 
 function addRewRow(cid) {
   var c = document.getElementById(cid);
-  var row = document.createElement('div'); row.className = 'rrow';
-  row.innerHTML = '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;"><input class="inp" placeholder="혜택 내용"><button class="rmb" onclick="this.parentElement.remove()">✕</button>';
-  c.appendChild(row);
+  var row.innerHTML =
+  '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;">' +
+
+  '<input class="inp" placeholder="혜택 내용">' +
+
+  '<input class="inp" type="number" placeholder="개수" min="1" value="1" style="width:70px;flex-shrink:0;">' +
+
+  '<button class="rmb" onclick="this.parentElement.remove()">✕</button>';
 }
 
 function copyRewards() {
@@ -716,8 +728,17 @@ function savePad() {
   var rows = document.querySelectorAll('#rew-rows .rrow'), rewards = [];
   rows.forEach(function(row) {
     var ins = row.querySelectorAll('input');
-    var n = parseInt(ins[0].value), label = ins[1].value.trim();
-    if (n && label) rewards.push({ n: n, label: label });
+   var n = parseInt(ins[0].value);
+var label = ins[1].value.trim();
+var count = parseInt(ins[2].value) || 1;
+
+if (n && label) {
+  rewards.push({
+    n: n,
+    label: label,
+    count: count
+  });
+}
   });
   var editIdx = parseInt(document.getElementById('editing-pad-idx').value);
   if (editIdx >= 0) {
@@ -748,7 +769,8 @@ function renderDet() {
   var s = getShow(curShow), p = s && s.pads[curPad]; if (!p) return;
   document.getElementById('d-show').textContent = s.name;
   document.getElementById('d-pad').textContent = '도장판 #' + (curPad + 1);
-  document.getElementById('d-goal').textContent = p.rewards.map(function(r) { return r.n + '회 → ' + r.label; }).join(' · ') || '혜택 미설정';
+  document.getElementById('d-goal').textContent = p.rewards.map(function(r) { return r.n + '회 → ' + r.label +
+  ((r.count && r.count > 1) ? ' ×' + r.count : ''); }).join(' · ') || '혜택 미설정';
   var recs = (p.records || []).slice().sort(function(a, b) { return a.date.localeCompare(b.date); });
   var cols = Math.min(p.total, 5);
   var dc = document.getElementById('d-stamps');
@@ -956,7 +978,7 @@ function checkRewards(sid, pi) {
         return b.sid === sid && b.pi === pi && b.label === r.label && b.auto;
       });
       if (!exists) {
-        db.manualB.push({ id: uid(), sid: sid, pi: pi, label: r.label, total: 1, used: false, auto: true });
+        db.manualB.push({ id: uid(), sid: sid, pi: pi, label: r.label, total: r.count || 1, used: false, auto: true });
       }
     }
   });
