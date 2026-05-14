@@ -1084,9 +1084,9 @@ function renderB(filter) {
         }
 
         if (filled >= r.n) {
-          grouped[r.label].total++;
+          grouped[r.label].total += (r.count || 1);
 
-          if (r.used) grouped[r.label].used++;
+          if (r.used) grouped[r.label].used += (r.count || 1);
         } else {
           grouped[r.label].locked++;
         }
