@@ -700,14 +700,14 @@ function changeCnt(d) { padCnt = Math.max(1, Math.min(20, padCnt + d)); document
 
 function addRewRow(cid) {
   var c = document.getElementById(cid);
-  var row = innerHTML =
-  '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;">' +
-
-  '<input class="inp" placeholder="혜택 내용">' +
-
-  '<input class="inp" type="number" placeholder="개수" min="1" value="1" style="width:70px;flex-shrink:0;">' +
-
-  '<button class="rmb" onclick="this.parentElement.remove()">✕</button>';
+  var row = document.createElement('div');
+  row.className = 'rrow';
+  row.innerHTML =
+    '<input class="inp" type="number" placeholder="회차" min="1" style="width:70px;flex-shrink:0;">' +
+    '<input class="inp" placeholder="혜택 내용">' +
+    '<input class="inp" type="number" placeholder="개수" min="1" value="1" style="width:70px;flex-shrink:0;">' +
+    '<button class="rmb" onclick="this.parentElement.remove()">✕</button>';
+  c.appendChild(row);
 }
 
 function copyRewards() {
