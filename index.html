@@ -1087,10 +1087,9 @@ function renderB(filter) {
           };
         }
 
-        if (filled >= r.n) {
+       if (filled >= r.n) {
           grouped[r.label].total += (r.count || 1);
-
-          if (r.used) grouped[r.label].used += (r.count || 1);
+          grouped[r.label].used += (r.usedCount || 0);
         } else {
           grouped[r.label].locked++;
         }
@@ -1169,8 +1168,7 @@ if (g.total <= 0) {
   status === 'locked'
     ? '<div style="font-size:11px;font-weight:700;color:var(--mu);">미달성</div>'
     : remain > 0
-      ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;">사용하기</button>'
-      : '<div style="font-size:11px;font-weight:700;color:var(--mu);">완료</div>'
+      ? : '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--bg);color:var(--mu);border:1px solid var(--brd);cursor:pointer;font-family:inherit;font-weight:700;">↩ 취소</button>'
 ) +
 
         '</div>';
@@ -1221,31 +1219,47 @@ function usePadReward(sid, rewardLabel) {
   var s = getShow(sid);
   if (!s) return;
 
-  var available = [];
-
+  // 해당 혜택의 전체 달성된 r 목록 수집
+  var rewardRefs = [];
   (s.pads || []).forEach(function(p) {
     var filled = (p.records || []).length;
-
     (p.rewards || []).forEach(function(r) {
-      if (r.label === rewardLabel && filled >= r.n && !r.used) {
-        available.push(r);
+      if (r.label === rewardLabel && filled >= r.n) {
+        rewardRefs.push(r);
       }
     });
   });
 
-  if (!available.length) {
-    alert('사용 가능한 혜택이 없어요');
-    return;
+  if (!rewardRefs.length) { alert('사용 가능한 혜택이 없어요'); return; }
+
+  // 전체 장 수 / 사용 장 수 계산
+  var totalQty = rewardRefs.reduce(function(sum, r) { return sum + (r.count || 1); }, 0);
+  var usedQty = rewardRefs.reduce(function(sum, r) { return sum + (r.usedCount || 0); }, 0);
+  var remainQty = totalQty - usedQty;
+
+  if (remainQty > 0) {
+    // 사용하기
+    if (!confirm('"' + rewardLabel + '" 1장 사용할까요?\n(남은 장수: ' + remainQty + '장)')) return;
+    // usedCount가 count 미만인 첫 번째 r에 1 추가
+    for (var i = 0; i < rewardRefs.length; i++) {
+      var r = rewardRefs[i];
+      var rc = r.count || 1;
+      var uc = r.usedCount || 0;
+      if (uc < rc) { r.usedCount = uc + 1; break; }
+    }
+    save(); renderB(currentBenefitFilter);
+    alert('✓ 1장 사용 완료! 남은 장수: ' + (remainQty - 1) + '장');
+  } else {
+    // 취소하기
+    if (!confirm('"' + rewardLabel + '" 사용 1장을 취소할까요?\n(현재 ' + usedQty + '장 사용 완료)')) return;
+    // usedCount가 1 이상인 마지막 r에서 1 빼기
+    for (var j = rewardRefs.length - 1; j >= 0; j--) {
+      var rr = rewardRefs[j];
+      if ((rr.usedCount || 0) > 0) { rr.usedCount--; break; }
+    }
+    save(); renderB(currentBenefitFilter);
+    alert('↩ 1장 취소 완료! 남은 장수: ' + (usedQty - 1 > 0 ? totalQty - (usedQty - 1) : totalQty) + '장');
   }
-
-  available[0].used = true;
-
-  save();
-  renderB(currentBenefitFilter);
-
-  alert(
-    '"' + rewardLabel + '" 사용 완료!\n\n남은 개수: ' + (available.length - 1) + '개'
-  );
 }
 
 // ✅ 수동 입력 혜택 사용 처리
