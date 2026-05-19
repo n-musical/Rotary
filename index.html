@@ -1168,8 +1168,8 @@ if (g.total <= 0) {
  status === 'locked'
     ? '<div style="font-size:11px;font-weight:700;color:var(--mu);">미달성</div>'
     : '<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;">' +
-        (remain > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'use\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;">사용하기</button>' : '') +
-        (g.used > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'cancel\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--bg);color:var(--mu);border:1px solid var(--brd);cursor:pointer;font-family:inherit;font-weight:700;">↩ 취소</button>' : '') +
+        (remain > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'use\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;width:70px;">사용하기</button>' : '') +
+        (g.used > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'cancel\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--bg);color:var(--mu);border:1px solid var(--brd);cursor:pointer;font-family:inherit;font-weight:700;width:70px;">↩ 취소</button>' : '') +
       '</div>'
 ) +
 
