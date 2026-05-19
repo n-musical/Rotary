@@ -1221,7 +1221,6 @@ function usePadReward(sid, rewardLabel, action) {
   var s = getShow(sid);
   if (!s) return;
 
-  // 해당 혜택의 전체 달성된 r 목록 수집
   var rewardRefs = [];
   (s.pads || []).forEach(function(p) {
     var filled = (p.records || []).length;
@@ -1232,9 +1231,8 @@ function usePadReward(sid, rewardLabel, action) {
     });
   });
 
-  if (!rewardRefs.length) { alert('사용 가능한 혜택이 없어요'); return; }
+  if (!rewardRefs.length) { alert('해당 혜택을 찾을 수 없어요'); return; }
 
-  // 전체 장 수 / 사용 장 수 계산
   var totalQty = rewardRefs.reduce(function(sum, r) { return sum + (r.count || 1); }, 0);
   var usedQty = rewardRefs.reduce(function(sum, r) { return sum + (r.usedCount || 0); }, 0);
   var remainQty = totalQty - usedQty;
@@ -1244,37 +1242,26 @@ function usePadReward(sid, rewardLabel, action) {
     if (!confirm('"' + rewardLabel + '" 1장 사용할까요?\n(남은 장수: ' + remainQty + '장)')) return;
     for (var i = 0; i < rewardRefs.length; i++) {
       var r = rewardRefs[i];
-      var rc = r.count || 1;
-      var uc = r.usedCount || 0;
-      if (uc < rc) { r.usedCount = uc + 1; break; }
+      if ((r.usedCount || 0) < (r.count || 1)) {
+        r.usedCount = (r.usedCount || 0) + 1;
+        break;
+      }
     }
     save(); renderB(currentBenefitFilter);
     alert('✓ 1장 사용 완료! 남은 장수: ' + (remainQty - 1) + '장');
   } else if (action === 'cancel') {
     if (usedQty <= 0) { alert('취소할 사용 내역이 없어요!'); return; }
-    if (!confirm('"' + rewardLabel + '" 사용 1장을 취소할까요?\n(현재 ' + usedQty + '장 사용 완료)')) return;
+    if (!confirm('"' + rewardLabel + '" 사용 1장을 취소할까요?\n(현재 ' + usedQty + '장 사용)')) return;
     for (var j = rewardRefs.length - 1; j >= 0; j--) {
-      var rr = rewardRefs[j];
-      if ((rr.usedCount || 0) > 0) { rr.usedCount--; break; }
+      if ((rewardRefs[j].usedCount || 0) > 0) {
+        rewardRefs[j].usedCount--;
+        break;
+      }
     }
     save(); renderB(currentBenefitFilter);
-    alert('↩ 1장 취소 완료!');
-  }
-    save(); renderB(currentBenefitFilter);
-    alert('✓ 1장 사용 완료! 남은 장수: ' + (remainQty - 1) + '장');
-  } else {
-    // 취소하기
-    if (!confirm('"' + rewardLabel + '" 사용 1장을 취소할까요?\n(현재 ' + usedQty + '장 사용 완료)')) return;
-    // usedCount가 1 이상인 마지막 r에서 1 빼기
-    for (var j = rewardRefs.length - 1; j >= 0; j--) {
-      var rr = rewardRefs[j];
-      if ((rr.usedCount || 0) > 0) { rr.usedCount--; break; }
-    }
-    save(); renderB(currentBenefitFilter);
-    alert('↩ 1장 취소 완료! 남은 장수: ' + (usedQty - 1 > 0 ? totalQty - (usedQty - 1) : totalQty) + '장');
+    alert('↩ 1장 취소 완료! 남은 장수: ' + (remainQty + 1) + '장');
   }
 }
-
 // ✅ 수동 입력 혜택 사용 처리
 function useManualBById(id) {
   var b = db.manualB.find(function(x) { return x.id === id; });
