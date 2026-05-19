@@ -1167,9 +1167,10 @@ if (g.total <= 0) {
            (
  status === 'locked'
     ? '<div style="font-size:11px;font-weight:700;color:var(--mu);">미달성</div>'
-    : remain > 0
-      ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;">사용하기</button>'
-      : '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--bg);color:var(--mu);border:1px solid var(--brd);cursor:pointer;font-family:inherit;font-weight:700;">↩ 취소</button>'
+    : '<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;">' +
+        (remain > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'use\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:700;">사용하기</button>' : '') +
+        (g.used > 0 ? '<button onclick="usePadReward(\'' + s.id + '\', \'' + g.label.replace(/'/g, "\\'") + '\', \'cancel\')" style="font-size:11px;padding:6px 12px;border-radius:8px;background:var(--bg);color:var(--mu);border:1px solid var(--brd);cursor:pointer;font-family:inherit;font-weight:700;">↩ 취소</button>' : '') +
+      '</div>'
 ) +
 
         '</div>';
@@ -1216,7 +1217,7 @@ if (g.total <= 0) {
 }
 
 // ✅ 도장판 혜택 사용 처리
-function usePadReward(sid, rewardLabel) {
+function usePadReward(sid, rewardLabel, action) {
   var s = getShow(sid);
   if (!s) return;
 
@@ -1238,16 +1239,27 @@ function usePadReward(sid, rewardLabel) {
   var usedQty = rewardRefs.reduce(function(sum, r) { return sum + (r.usedCount || 0); }, 0);
   var remainQty = totalQty - usedQty;
 
-  if (remainQty > 0) {
-    // 사용하기
+  if (action === 'use') {
+    if (remainQty <= 0) { alert('사용 가능한 장수가 없어요!'); return; }
     if (!confirm('"' + rewardLabel + '" 1장 사용할까요?\n(남은 장수: ' + remainQty + '장)')) return;
-    // usedCount가 count 미만인 첫 번째 r에 1 추가
     for (var i = 0; i < rewardRefs.length; i++) {
       var r = rewardRefs[i];
       var rc = r.count || 1;
       var uc = r.usedCount || 0;
       if (uc < rc) { r.usedCount = uc + 1; break; }
     }
+    save(); renderB(currentBenefitFilter);
+    alert('✓ 1장 사용 완료! 남은 장수: ' + (remainQty - 1) + '장');
+  } else if (action === 'cancel') {
+    if (usedQty <= 0) { alert('취소할 사용 내역이 없어요!'); return; }
+    if (!confirm('"' + rewardLabel + '" 사용 1장을 취소할까요?\n(현재 ' + usedQty + '장 사용 완료)')) return;
+    for (var j = rewardRefs.length - 1; j >= 0; j--) {
+      var rr = rewardRefs[j];
+      if ((rr.usedCount || 0) > 0) { rr.usedCount--; break; }
+    }
+    save(); renderB(currentBenefitFilter);
+    alert('↩ 1장 취소 완료!');
+  }
     save(); renderB(currentBenefitFilter);
     alert('✓ 1장 사용 완료! 남은 장수: ' + (remainQty - 1) + '장');
   } else {
